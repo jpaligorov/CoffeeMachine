@@ -1,4 +1,4 @@
-#Coffee Machine API
+# Coffee Machine API
 
 This project is designed to emulate a coffee machine.
 
@@ -10,7 +10,7 @@ This project is designed to emulate a coffee machine.
 - Dependency injection for testing
 - CustomStatusCodeResult to allow for empty responses
 
-#Prerequisites
+# Prerequisites
 .NET 9.0 SDK
 
 ## How to Run
