@@ -14,9 +14,9 @@ public class BrewCoffeeController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult Get()
+    public async Task<IActionResult> Get()
     {
-        var result = _handler.HandleRequest();
+        var result = await _handler.HandleRequestAsync();
 
         return result;
     }

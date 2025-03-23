@@ -1,6 +1,7 @@
 using CoffeeMachine.ActionResults;
 using CoffeeMachine.Common;
 using CoffeeMachine.Features.BrewCoffee;
+using CoffeeMachine.Services;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
@@ -9,7 +10,7 @@ namespace CoffeeMachine.Tests.Features.BrewCoffee;
 public class BrewCoffeeHandlerTests
 {
     [Fact]
-    public void Handle_ShouldReturn200()
+    public async Task Handle_ShouldReturn200()
     {
         // Arrange
         var mockDateTimeProvider = new Mock<IDateTimeProvider>();
@@ -17,28 +18,40 @@ public class BrewCoffeeHandlerTests
             .Setup(p => p.CurrentDateTimeNow)
             .Returns(new DateTime(2025, 3, 23));
         
-        var handler = new BrewCoffeeHandler(mockDateTimeProvider.Object);
+        var mockWeatherService = new Mock<IWeatherService>();
+        mockWeatherService
+            .Setup(ws => ws.GetCurrentTemperatureAsync(It.IsAny<string>()))
+            .ReturnsAsync(20);
+
+        
+        var handler = new BrewCoffeeHandler(mockDateTimeProvider.Object, mockWeatherService.Object);
         
         // Act
-        var result = handler.HandleRequest();
+        var result = await handler.HandleRequestAsync();
         
         // Assert
         Assert.IsType<OkObjectResult>(result);
     }
     
     [Fact]
-    public void Handle_ShouldReturn418OnAprilFoolsDay()
+    public async Task Handle_ShouldReturn418OnAprilFoolsDay()
     {
         // Arrange
         var mockDateTimeProvider = new Mock<IDateTimeProvider>();
         mockDateTimeProvider
             .Setup(p => p.CurrentDateTimeNow)
             .Returns(new DateTime(2025, 4, 1));
+        
+        var mockWeatherService = new Mock<IWeatherService>();
+        mockWeatherService
+            .Setup(ws => ws.GetCurrentTemperatureAsync(It.IsAny<string>()))
+            .ReturnsAsync(20);
 
-        var handler = new BrewCoffeeHandler(mockDateTimeProvider.Object);
+
+        var handler = new BrewCoffeeHandler(mockDateTimeProvider.Object, mockWeatherService.Object);
 
         // Act
-        var result = handler.HandleRequest();
+        var result = await handler.HandleRequestAsync();
 
         // Assert
         Assert.IsType<StatusCodeResult>(result);
@@ -47,22 +60,28 @@ public class BrewCoffeeHandlerTests
     }
 
     [Fact]
-    public void Handle_ShouldReturn503EveryFifthRequest()
+    public async Task Handle_ShouldReturn503EveryFifthRequest()
     {
         // Arrange
         var mockDateTimeProvider = new Mock<IDateTimeProvider>();
         mockDateTimeProvider
             .Setup(p => p.CurrentDateTimeNow)
             .Returns(new DateTime(2025, 3, 23));
+        
+        var mockWeatherService = new Mock<IWeatherService>();
+        mockWeatherService
+            .Setup(ws => ws.GetCurrentTemperatureAsync(It.IsAny<string>()))
+            .ReturnsAsync(20);
 
-        var handler = new BrewCoffeeHandler(mockDateTimeProvider.Object);
+
+        var handler = new BrewCoffeeHandler(mockDateTimeProvider.Object, mockWeatherService.Object);
 
         // Act
-        handler.HandleRequest();
-        handler.HandleRequest(); 
-        handler.HandleRequest();
-        handler.HandleRequest();
-        var result = handler.HandleRequest();
+        handler.HandleRequestAsync();
+        handler.HandleRequestAsync(); 
+        handler.HandleRequestAsync();
+        handler.HandleRequestAsync();
+        var result = await handler.HandleRequestAsync();
 
         // Assert
         Assert.IsType<CustomStatusCodeResult>(result);

@@ -1,15 +1,25 @@
 using CoffeeMachine.Common;
+using CoffeeMachine.Configuration;
 using CoffeeMachine.Features.BrewCoffee;
+using CoffeeMachine.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+
+builder.Services.Configure<WeatherApiConfig>(
+    builder.Configuration.GetSection("WeatherApi"));
+
+
 builder.Services.AddOpenApi();
 builder.Services.AddTransient<BrewCoffeeHandler>();
 builder.Services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
+
+builder.Services.AddScoped<IWeatherService, WeatherService>();
+
+builder.Services.AddHttpClient();
 
 var app = builder.Build();
 
