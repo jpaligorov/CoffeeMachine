@@ -9,8 +9,9 @@ This project is designed to emulate a coffee machine.
 - Custom date/time provider
 - Dependency injection for testing
 - CustomStatusCodeResult to allow for empty responses
+- Connected third party weather api to check for weather, and provide more customised message response
 
-#Prerequisites
+# Prerequisites
 .NET 9.0 SDK
 
 ## How to Run
