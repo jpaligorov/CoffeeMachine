@@ -4,7 +4,7 @@ This project is designed to emulate a coffee machine.
 
 ## Features
 - Brew coffee (`/brew-coffee` endpoint)
-   - Every fifth call will rreturn 503
+   - Every fifth call will return 503
    - If the date is April 1st, it will return 418
 - Custom date/time provider
 - Dependency injection for testing
